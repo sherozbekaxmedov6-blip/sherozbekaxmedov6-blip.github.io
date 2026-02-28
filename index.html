@@ -1,9 +1,135 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="uz">
 <head>
-    <title>My Site</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyTimer UZ</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    text-align: center;
+}
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+input {
+    width: 70%;
+    padding: 8px;
+}
+button {
+    padding: 8px 12px;
+    margin: 5px;
+    cursor: pointer;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    margin: 5px 0;
+}
+.progress {
+    background: #ddd;
+    border-radius: 10px;
+    height: 20px;
+    margin-top: 10px;
+}
+.progress-bar {
+    background: #4CAF50;
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+}
+.timer {
+    font-size: 30px;
+    margin: 10px 0;
+}
+</style>
 </head>
 <body>
-    <h1>Salom Dunyo 🔥</h1>
+
+<div class="container">
+    <h2>📚 StudyTimer UZ</h2>
+
+    <input type="text" id="taskInput" placeholder="Vazifa yoz...">
+    <button onclick="addTask()">Qo‘shish</button>
+
+    <ul id="taskList"></ul>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <h3>⏳ Pomodoro Timer</h3>
+    <div class="timer" id="timer">25:00</div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="resetTimer()">Reset</button>
+</div>
+
+<script>
+let tasks = [];
+let completed = 0;
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    const taskText = input.value;
+    if(taskText === "") return;
+
+    const li = document.createElement("li");
+    li.innerHTML = taskText + " <button onclick='completeTask(this)'>Bajarildi</button>";
+    document.getElementById("taskList").appendChild(li);
+
+    tasks.push(taskText);
+    input.value = "";
+    updateProgress();
+}
+
+function completeTask(button) {
+    button.parentElement.style.textDecoration = "line-through";
+    button.remove();
+    completed++;
+    updateProgress();
+}
+
+function updateProgress() {
+    if(tasks.length === 0) return;
+    const percent = (completed / tasks.length) * 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+}
+
+let time = 1500;
+let timerInterval;
+
+function startTimer() {
+    if(timerInterval) return;
+    timerInterval = setInterval(() => {
+        if(time <= 0) {
+            clearInterval(timerInterval);
+            alert("Vaqt tugadi!");
+            return;
+        }
+        time--;
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+        document.getElementById("timer").innerText =
+            `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }, 1000);
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    time = 1500;
+    document.getElementById("timer").innerText = "25:00";
+}
+</script>
+
 </body>
 </html>
